@@ -1,0 +1,56 @@
+#include <iostream>
+#include <vector>
+#include <string>
+using namespace std;
+
+class Solution {
+public:
+    string shiftingLetters(string s, vector<vector<int>>& shifts) {
+        int n = s.size();
+        vector<int> diff(n + 1, 0);
+
+        // Apply shifts using differential array
+        for (auto shift : shifts) {
+            if (shift[2] == 1) {
+                diff[shift[0]]++;
+                if (shift[1] + 1 < n) diff[shift[1] + 1]--;
+            } else {
+                diff[shift[0]]--;
+                if (shift[1] + 1 < n) diff[shift[1] + 1]++;
+            }
+        }
+
+        // Accumulate the shifts
+        for (int i = 1; i < n; ++i) {
+            diff[i] += diff[i - 1];
+        }
+
+        // Modify the string based on the accumulated shifts
+        string res;
+        for (int i = 0; i < n; ++i) {
+            int count = diff[i] % 26;  // Normalize shift to within [0, 25]
+            if (count < 0) count = 26 + count;  // Adjust for negative shifts
+            char curr = char((s[i] - 'a' + count) % 26 + 'a');
+            res.push_back(curr);
+        }
+
+        return res;  
+    }
+};
+
+int main() {
+    Solution solution;
+
+    // Test Case 1
+    string s1 = "abc";
+    vector<vector<int>> shifts1 = {{0, 1, 0}, {1, 2, 1}, {0, 2, 1}};
+    cout << solution.shiftingLetters(s1, shifts1) << endl;  // Expected output: "ace"
+
+    // Test Case 2
+    string s2 = "dztz";
+    vector<vector<int>> shifts2 = {{0, 0, 0}, {1, 1, 1}};
+    cout << solution.shiftingLetters(s2, shifts2) << endl;  // Expected output: "ezuu"
+
+    return 0;
+}
+
