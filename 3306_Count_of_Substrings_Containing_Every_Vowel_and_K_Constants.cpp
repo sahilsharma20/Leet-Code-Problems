@@ -38,7 +38,6 @@ class Solution {
                     response += (1 + extraLeft);
                 }
             }
-    
-            return response;
+               return response;
         }
     };
